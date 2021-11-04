@@ -1,7 +1,7 @@
 set(HEADERS
     include/config/version.hpp
     include/config/config.hpp
-    include/config/chain_config.hpp
+    include/config/genesis.hpp
     include/config/final_chain_config.hpp
     include/config/pbft_config.hpp
     include/config/state_api_config.hpp
@@ -10,7 +10,7 @@ set(HEADERS
 set(SOURCES
     src/config.cpp
     src/pbft_config.cpp
-    src/chain_config.cpp
+    src/genesis.cpp
     src/final_chain_config.cpp
     src/state_api_config.cpp
 )

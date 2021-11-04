@@ -14,7 +14,7 @@ struct TaraxaTest : BaseTest {
 };
 
 TEST_F(TaraxaTest, queryDPOS) {
-  auto enough_balance = cfg.chain.final_chain.state.dpos->eligibility_balance_threshold;
+  auto enough_balance = cfg.genesis.final_chain.state.dpos->eligibility_balance_threshold;
   state_api::DPOSTransfers transfers;
   transfers[make_addr(1)].value = enough_balance;
   transfers[make_addr(2)].value = enough_balance - 1;

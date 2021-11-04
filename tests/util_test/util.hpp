@@ -122,14 +122,14 @@ inline auto make_node_cfgs(uint count) {
     for (auto& cfg : ret) {
       if constexpr (tests_speed != 1) {
         // VDF config
-        cfg.chain.sortition.vrf.threshold_upper = 0xffff;
-        cfg.chain.sortition.vrf.threshold_lower = 0xe665;
-        cfg.chain.sortition.vdf.difficulty_min = 0;
-        cfg.chain.sortition.vdf.difficulty_max = 5;
-        cfg.chain.sortition.vdf.difficulty_stale = 5;
-        cfg.chain.sortition.vdf.lambda_bound = 100;
+        cfg.genesis.sortition.vrf.threshold_upper = 0xffff;
+        cfg.genesis.sortition.vrf.threshold_lower = 0xe665;
+        cfg.genesis.sortition.vdf.difficulty_min = 0;
+        cfg.genesis.sortition.vdf.difficulty_max = 5;
+        cfg.genesis.sortition.vdf.difficulty_stale = 5;
+        cfg.genesis.sortition.vdf.lambda_bound = 100;
         // PBFT config
-        cfg.chain.pbft.lambda_ms_min /= tests_speed;
+        cfg.genesis.pbft.lambda_ms_min /= tests_speed;
         cfg.network.network_transaction_interval /= tests_speed;
       }
       if constexpr (!enable_rpc_http) {
@@ -271,7 +271,7 @@ inline auto make_dpos_trx(FullNodeConfig const& sender_node_cfg, state_api::DPOS
                           uint64_t nonce = 0, u256 const& gas_price = 0, uint64_t extra_gas = 0) {
   StateAPI::DPOSTransactionPrototype proto(transfers);
   return Transaction(nonce, proto.value, gas_price, proto.minimal_gas + extra_gas, std::move(proto.input),
-                     dev::Secret(sender_node_cfg.node_secret), proto.to, sender_node_cfg.chain.chain_id);
+                     dev::Secret(sender_node_cfg.node_secret), proto.to, sender_node_cfg.genesis.chain_id);
 }
 
 inline auto own_balance(std::shared_ptr<FullNode> const& node) {
@@ -279,7 +279,7 @@ inline auto own_balance(std::shared_ptr<FullNode> const& node) {
 }
 
 inline auto own_effective_genesis_bal(FullNodeConfig const& cfg) {
-  return cfg.chain.final_chain.state.effective_genesis_balance(dev::toAddress(dev::Secret(cfg.node_secret)));
+  return cfg.genesis.final_chain.state.effective_genesis_balance(dev::toAddress(dev::Secret(cfg.node_secret)));
 }
 
 inline auto make_simple_pbft_block(h256 const& hash, uint64_t period) {

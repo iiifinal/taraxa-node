@@ -40,7 +40,7 @@ void check_2tPlus1_validVotingPlayers_activePlayers_threshold(size_t committee_s
   auto node_cfgs = make_node_cfgs<5>(5);
   auto node_1_expected_bal = own_effective_genesis_bal(node_cfgs[0]);
   for (auto &cfg : node_cfgs) {
-    cfg.chain.pbft.committee_size = committee_size;
+    cfg.genesis.pbft.committee_size = committee_size;
   }
   auto nodes = launch_nodes(node_cfgs);
 
@@ -53,7 +53,7 @@ void check_2tPlus1_validVotingPlayers_activePlayers_threshold(size_t committee_s
   uint64_t trxs_count = 0;
 
   {
-    auto min_stake_to_vote = node_cfgs[0].chain.final_chain.state.dpos->eligibility_balance_threshold;
+    auto min_stake_to_vote = node_cfgs[0].genesis.final_chain.state.dpos->eligibility_balance_threshold;
     state_api::DPOSTransfers delegations;
     for (size_t i(1); i < nodes.size(); ++i) {
       std::cout << "Delegating stake of " << min_stake_to_vote << " to node " << i << std::endl;
@@ -394,7 +394,7 @@ TEST_F(PbftManagerTest, check_get_eligible_vote_count) {
   auto node_cfgs = make_node_cfgs<5>(5);
   auto node_1_expected_bal = own_effective_genesis_bal(node_cfgs[0]);
   for (auto &cfg : node_cfgs) {
-    cfg.chain.pbft.committee_size = 100;
+    cfg.genesis.pbft.committee_size = 100;
   }
   auto nodes = launch_nodes(node_cfgs);
 
@@ -410,7 +410,7 @@ TEST_F(PbftManagerTest, check_get_eligible_vote_count) {
   auto curent_votes_for_node = 1;
 
   {
-    auto min_stake_to_vote = node_cfgs[0].chain.final_chain.state.dpos->eligibility_balance_threshold;
+    auto min_stake_to_vote = node_cfgs[0].genesis.final_chain.state.dpos->eligibility_balance_threshold;
     auto stake_to_vote = min_stake_to_vote;
     state_api::DPOSTransfers delegations;
     for (size_t i(1); i < nodes.size(); ++i) {

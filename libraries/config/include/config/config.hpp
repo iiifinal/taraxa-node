@@ -6,7 +6,7 @@
 #include "common/types.hpp"
 #include "common/util.hpp"
 #include "common/vrf_wrapper.hpp"
-#include "config/chain_config.hpp"
+#include "config/genesis.hpp"
 #include "logger/logger_config.hpp"
 
 namespace taraxa {
@@ -83,7 +83,7 @@ struct FullNodeConfig {
   NetworkConfig network;
   std::optional<RpcConfig> rpc;
   TestParamsConfig test_params;
-  ChainConfig chain = ChainConfig::predefined();
+  Genesis genesis = Genesis::predefined();
   state_api::Opts opts_final_chain;
   std::vector<logger::Config> log_configs;
 

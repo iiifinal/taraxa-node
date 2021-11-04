@@ -1,6 +1,8 @@
 #pragma once
 
 #include <json/json.h>
+#include <libdevcore/Common.h>
+#include <libdevcore/RLP.h>
 
 #include "common/constants.hpp"
 #include "common/encoding_rlp.hpp"
@@ -14,6 +16,22 @@ struct VrfParams {
 };
 
 struct VdfParams {
+  dev::bytes rlp() const {
+    dev::RLPStream s;
+    s.appendList(6);
+
+    s << threshold_selection;
+    s << threshold_vdf_omit;
+    s << difficulty_min;
+    s << difficulty_max;
+    s << difficulty_stale;
+    s << lambda_bound;
+
+    return s.out();
+  }
+
+  uint16_t threshold_selection = 0;
+  uint16_t threshold_vdf_omit = 0;
   uint16_t difficulty_min = 0;
   uint16_t difficulty_max = 1;
   uint16_t difficulty_stale = 0;
@@ -52,6 +70,21 @@ struct SortitionConfig : SortitionParams {
   std::pair<uint16_t, uint16_t> dag_efficiency_targets = {48 * kOnePercent, 52 * kOnePercent};
   uint16_t computation_interval = 50;  // pbft blocks
 
+  dev::bytes rlp() const {
+    dev::RLPStream s;
+    s.appendList(7);
+
+    s << vrf.threshold_upper;
+    s << vrf.threshold_lower;
+    s << vdf.rlp();
+
+    s << changes_count_for_average;
+    s << max_interval_correction;
+    s << dag_efficiency_targets;
+    s << computation_interval;
+
+    return s.out();
+  }
   uint16_t targetEfficiency() const { return (dag_efficiency_targets.first + dag_efficiency_targets.second) / 2; }
 };
 

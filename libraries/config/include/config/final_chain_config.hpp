@@ -13,6 +13,17 @@ struct Config {
     addr_t author;
     uint64_t timestamp = 0;
   } genesis_block_fields;
+
+  bytes rlp() const {
+    dev::RLPStream s;
+    s.appendList(3);
+
+    state.rlp(s);
+    s << genesis_block_fields.author;
+    s << genesis_block_fields.timestamp;
+
+    return s.out();
+  }
 };
 Json::Value enc_json(Config const& obj);
 void dec_json(Json::Value const& json, Config& obj);

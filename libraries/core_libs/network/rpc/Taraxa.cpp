@@ -116,7 +116,7 @@ Json::Value Taraxa::taraxa_getDagBlockByLevel(string const& _blockLevel, bool _i
   }
 }
 
-Json::Value Taraxa::taraxa_getConfig() { return enc_json(tryGetNode()->getConfig().chain); }
+Json::Value Taraxa::taraxa_getConfig() { return enc_json(tryGetNode()->getConfig().genesis); }
 
 Json::Value Taraxa::taraxa_queryDPOS(Json::Value const& _q) {
   std::optional<EthBlockNumber> blk_n;

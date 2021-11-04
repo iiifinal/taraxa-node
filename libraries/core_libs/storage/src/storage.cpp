@@ -433,6 +433,20 @@ void DbStorage::cleanupParamsChanges(DbStorage::Batch& batch, uint16_t changes_t
   }
 }
 
+void DbStorage::setGenesisHash(const h256& genesis_hash) {
+  if (!exist(0, Columns::genesis)) {
+    insert(Columns::genesis, 0, genesis_hash);
+  }
+}
+
+std::optional<h256> DbStorage::getGenesisHash() {
+  auto hash = asBytes(lookup(0, Columns::genesis));
+  if (hash.size() > 0) {
+    return h256(hash);
+  }
+  return {};
+}
+
 void DbStorage::savePeriodData(const SyncBlock& sync_block, Batch& write_batch) {
   uint64_t period = sync_block.pbft_blk->getPeriod();
   addPbftBlockPeriodToBatch(period, sync_block.pbft_blk->getBlockHash(), write_batch);

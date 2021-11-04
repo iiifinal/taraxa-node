@@ -44,8 +44,8 @@ struct NetworkTest : BaseTest {};
 // Test creates two Network setup and verifies sending block
 // between is successfull
 TEST_F(NetworkTest, transfer_block) {
-  std::unique_ptr<Network> nw1 = std::make_unique<taraxa::Network>(g_conf1->network);
-  std::unique_ptr<Network> nw2 = std::make_unique<taraxa::Network>(g_conf2->network);
+  std::unique_ptr<Network> nw1 = std::make_unique<taraxa::Network>(g_conf1);
+  std::unique_ptr<Network> nw2 = std::make_unique<taraxa::Network>(g_conf2);
 
   nw1->start();
   nw2->start();
@@ -102,8 +102,8 @@ TEST_F(NetworkTest, transfer_lot_of_blocks) {
   }
 
   // add one valid as last
-  auto dag_genesis = nodes[0]->getConfig().chain.dag_genesis_block.getHash();
-  SortitionConfig vdf_config(node_cfgs[0].chain.sortition);
+  auto dag_genesis = nodes[0]->getConfig().genesis.dag_block.getHash();
+  SortitionConfig vdf_config(node_cfgs[0].genesis.sortition);
   vdf_sortition::VdfSortition vdf(vdf_config, nodes[0]->getVrfSecretKey(), getRlpBytes(1));
   vdf.computeVdfSolution(vdf_config, dag_genesis.asBytes());
   DagBlock blk(dag_genesis, 1, {}, {samples::createSignedTrxSamples(0, 1, g_secret)[0]->getHash()}, vdf,
@@ -198,8 +198,8 @@ TEST_F(NetworkTest, sync_large_pbft_block) {
 // Test creates two Network setup and verifies sending transaction
 // between is successfull
 TEST_F(NetworkTest, transfer_transaction) {
-  auto nw1 = std::make_unique<Network>(g_conf1->network);
-  auto nw2 = std::make_unique<Network>(g_conf2->network);
+  auto nw1 = std::make_unique<Network>(g_conf1);
+  auto nw2 = std::make_unique<Network>(g_conf2);
   nw1->start();
   nw2->start();
 
@@ -234,9 +234,9 @@ TEST_F(NetworkTest, save_network) {
   auto key2 = dev::KeyPair::create();
   auto key3 = dev::KeyPair::create();
   {
-    std::shared_ptr<Network> nw1 = std::make_shared<taraxa::Network>(g_conf1->network);
-    std::shared_ptr<Network> nw2 = std::make_shared<taraxa::Network>(g_conf2->network, "/tmp/nw2", key2);
-    std::shared_ptr<Network> nw3 = std::make_shared<taraxa::Network>(g_conf3->network, "/tmp/nw3", key3);
+    std::shared_ptr<Network> nw1 = std::make_shared<taraxa::Network>(g_conf1);
+    std::shared_ptr<Network> nw2 = std::make_shared<taraxa::Network>(g_conf2, "/tmp/nw2", key2);
+    std::shared_ptr<Network> nw3 = std::make_shared<taraxa::Network>(g_conf3, "/tmp/nw3", key3);
 
     nw1->start();
     nw2->start();
@@ -252,8 +252,8 @@ TEST_F(NetworkTest, save_network) {
     });
   }
 
-  std::shared_ptr<Network> nw2 = std::make_shared<taraxa::Network>(g_conf2->network, "/tmp/nw2", key2);
-  std::shared_ptr<Network> nw3 = std::make_shared<taraxa::Network>(g_conf3->network, "/tmp/nw3", key3);
+  std::shared_ptr<Network> nw2 = std::make_shared<taraxa::Network>(g_conf2, "/tmp/nw2", key2);
+  std::shared_ptr<Network> nw3 = std::make_shared<taraxa::Network>(g_conf3, "/tmp/nw3", key3);
   nw2->start();
   nw3->start();
 
@@ -299,10 +299,10 @@ TEST_F(NetworkTest, node_sync) {
 
   std::vector<std::pair<DagBlock, std::shared_ptr<Transaction>>> blks;
   // Generate DAG blocks
-  auto dag_genesis = node1->getConfig().chain.dag_genesis_block.getHash();
+  auto dag_genesis = node1->getConfig().genesis.dag_block.getHash();
   auto sk = node1->getSecretKey();
   auto vrf_sk = node1->getVrfSecretKey();
-  SortitionConfig vdf_config(node_cfgs[0].chain.sortition);
+  SortitionConfig vdf_config(node_cfgs[0].genesis.sortition);
 
   auto propose_level = 1;
   vdf_sortition::VdfSortition vdf1(vdf_config, vrf_sk, getRlpBytes(propose_level));
@@ -374,10 +374,10 @@ TEST_F(NetworkTest, node_pbft_sync) {
   auto db1 = node1->getDB();
   auto pbft_chain1 = node1->getPbftChain();
 
-  auto dag_genesis = node1->getConfig().chain.dag_genesis_block.getHash();
+  auto dag_genesis = node1->getConfig().genesis.dag_block.getHash();
   auto sk = node1->getSecretKey();
   auto vrf_sk = node1->getVrfSecretKey();
-  SortitionConfig vdf_config(node_cfgs[0].chain.sortition);
+  SortitionConfig vdf_config(node_cfgs[0].genesis.sortition);
   auto batch = db1->createWriteBatch();
 
   // generate first PBFT block sample
@@ -522,10 +522,10 @@ TEST_F(NetworkTest, node_pbft_sync_without_enough_votes) {
   auto db1 = node1->getDB();
   auto pbft_chain1 = node1->getPbftChain();
 
-  auto dag_genesis = node1->getConfig().chain.dag_genesis_block.getHash();
+  auto dag_genesis = node1->getConfig().genesis.dag_block.getHash();
   auto sk = node1->getSecretKey();
   auto vrf_sk = node1->getVrfSecretKey();
-  SortitionConfig vdf_config(node_cfgs[0].chain.sortition);
+  SortitionConfig vdf_config(node_cfgs[0].genesis.sortition);
   auto batch = db1->createWriteBatch();
 
   // generate first PBFT block sample
@@ -877,10 +877,10 @@ TEST_F(NetworkTest, node_sync_with_transactions) {
 
   std::vector<DagBlock> blks;
   // Generate DAG blocks
-  auto dag_genesis = node1->getConfig().chain.dag_genesis_block.getHash();
+  auto dag_genesis = node1->getConfig().genesis.dag_block.getHash();
   auto sk = node1->getSecretKey();
   auto vrf_sk = node1->getVrfSecretKey();
-  SortitionConfig vdf_config(node_cfgs[0].chain.sortition);
+  SortitionConfig vdf_config(node_cfgs[0].genesis.sortition);
   auto propose_level = 1;
   vdf_sortition::VdfSortition vdf1(vdf_config, vrf_sk, getRlpBytes(propose_level));
   vdf1.computeVdfSolution(vdf_config, dag_genesis.asBytes());
@@ -965,10 +965,10 @@ TEST_F(NetworkTest, node_sync2) {
 
   std::vector<DagBlock> blks;
   // Generate DAG blocks
-  auto dag_genesis = node1->getConfig().chain.dag_genesis_block.getHash();
+  auto dag_genesis = node1->getConfig().genesis.dag_block.getHash();
   auto sk = node1->getSecretKey();
   auto vrf_sk = node1->getVrfSecretKey();
-  SortitionConfig vdf_config(node_cfgs[0].chain.sortition);
+  SortitionConfig vdf_config(node_cfgs[0].genesis.sortition);
   auto transactions = samples::createSignedTrxSamples(0, NUM_TRX2, sk);
   // DAG block1
   auto propose_level = 1;

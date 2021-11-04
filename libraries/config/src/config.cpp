@@ -202,18 +202,18 @@ FullNodeConfig::FullNodeConfig(Json::Value const &string_or_object, Json::Value 
       }
     }
   }
-  if (auto const &v = root["chain_config"]; v.isString()) {
-    chain = ChainConfig::predefined(v.asString());
+  if (auto const &v = root["genesis"]; v.isString()) {
+    genesis = Genesis::predefined(v.asString());
   } else if (v.isObject()) {
-    dec_json(v, chain);
+    dec_json(v, genesis);
   } else {
-    chain = ChainConfig::predefined();
+    genesis = Genesis::predefined();
   }
 
   node_secret = wallet["node_secret"].asString();
   vrf_secret = vrf_wrapper::vrf_sk_t(wallet["vrf_secret"].asString());
 
-  network.network_id = chain.chain_id;
+  network.network_id = genesis.chain_id;
   // TODO configurable
   opts_final_chain.expected_max_trx_per_block = 1000;
   opts_final_chain.max_trie_full_node_levels_to_cache = 4;

@@ -26,7 +26,7 @@ TransactionManager::TransactionManager(FullNodeConfig const &conf, addr_t node_a
 }
 
 std::pair<bool, std::string> TransactionManager::verifyTransaction(Transaction const &trx) const {
-  if (trx.getChainID() != conf_.chain.chain_id) {
+  if (trx.getChainID() != conf_.genesis.chain_id) {
     return {false, "chain_id mismatch"};
   }
   try {

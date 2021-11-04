@@ -15,11 +15,12 @@ StatusPacketHandler::StatusPacketHandler(
     std::shared_ptr<SyncingState> syncing_state, std::shared_ptr<PbftChain> pbft_chain,
     std::shared_ptr<PbftManager> pbft_mgr, std::shared_ptr<DagManager> dag_mgr,
     std::shared_ptr<DagBlockManager> dag_blk_mgr, std::shared_ptr<NextVotesForPreviousRound> next_votes_mgr,
-    std::shared_ptr<DbStorage> db, uint64_t conf_network_id, const addr_t& node_addr)
+    std::shared_ptr<DbStorage> db, uint64_t conf_network_id, h256 genesis_hash, const addr_t& node_addr)
     : ExtSyncingPacketHandler(std::move(peers_state), std::move(packets_stats), std::move(syncing_state),
                               std::move(pbft_chain), std::move(pbft_mgr), std::move(dag_mgr), std::move(dag_blk_mgr),
                               std::move(db), node_addr, "STATUS_PH"),
       conf_network_id_(conf_network_id),
+      genesis_hash_(genesis_hash),
       next_votes_mgr_(std::move(next_votes_mgr)) {}
 
 void StatusPacketHandler::process(const PacketData& packet_data, const std::shared_ptr<TaraxaPeer>& peer) {
@@ -72,7 +73,7 @@ void StatusPacketHandler::process(const PacketData& packet_data, const std::shar
       return;
     }
 
-    if (genesis_hash != dag_mgr_->get_genesis()) {
+    if (genesis_hash != genesis_hash_) {
       LOG((peers_state_->getPeersCount()) ? log_nf_ : log_er_)
           << "Incorrect genesis hash " << genesis_hash << ", host " << packet_data.from_node_id_.abridged()
           << " will be disconnected";
@@ -151,7 +152,7 @@ bool StatusPacketHandler::sendStatus(const dev::p2p::NodeID& node_id, bool initi
     std::string status_packet_type = initial ? "initial" : "standard";
 
     LOG(log_dg_) << "Sending " << status_packet_type << " status message to " << node_id << ", protocol version "
-                 << TARAXA_NET_VERSION << ", network id " << conf_network_id_ << ", genesis " << dag_mgr_->get_genesis()
+                 << TARAXA_NET_VERSION << ", network id " << conf_network_id_ << ", genesis " << genesis_hash_
                  << ", node version " << TARAXA_VERSION;
 
     auto dag_max_level = dag_mgr_->getMaxLevel();
@@ -163,7 +164,7 @@ bool StatusPacketHandler::sendStatus(const dev::p2p::NodeID& node_id, bool initi
       success = sealAndSend(
           node_id, StatusPacket,
           std::move(dev::RLPStream(INITIAL_STATUS_PACKET_ITEM_COUNT)
-                    << conf_network_id_ << dag_max_level << dag_mgr_->get_genesis() << pbft_chain_size
+                    << conf_network_id_ << dag_max_level << genesis_hash_ << pbft_chain_size
                     << syncing_state_->is_pbft_syncing() << pbft_round << pbft_previous_round_next_votes_size
                     << TARAXA_MAJOR_VERSION << TARAXA_MINOR_VERSION << TARAXA_PATCH_VERSION));
     } else {

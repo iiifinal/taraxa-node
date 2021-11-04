@@ -280,7 +280,6 @@ DagManager::DagManager(blk_hash_t const &genesis, addr_t node_addr, std::shared_
       db_(db),
       anchor_(genesis),
       period_(0),
-      genesis_(genesis),
       log_time_(log_time) {
   LOG_OBJECTS_CREATE("DAGMGR");
   if (auto ret = getLatestPivotAndTips(); ret) {

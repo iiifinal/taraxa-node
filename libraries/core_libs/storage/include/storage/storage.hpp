@@ -96,6 +96,7 @@ class DbStorage : public std::enable_shared_from_this<DbStorage> {
     // do not change/move
     COLUMN(default_column);
     // Contains full data for an executed PBFT block including PBFT block, cert votes, dag blocks and transactions
+    COLUMN(genesis);
     COLUMN(period_data);
     COLUMN(dag_blocks);
     COLUMN(dag_blocks_index);
@@ -179,6 +180,10 @@ class DbStorage : public std::enable_shared_from_this<DbStorage> {
   void loadSnapshots();
   void disableSnapshots();
   void enableSnapshots();
+
+  // Genesis
+  void setGenesisHash(const h256& genesis_hash);
+  std::optional<h256> getGenesisHash();
 
   // Period data
   void savePeriodData(const SyncBlock& sync_block, Batch& write_batch);

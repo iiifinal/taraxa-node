@@ -480,7 +480,9 @@ TEST_F(FullNodeTest, sync_five_nodes) {
 
   auto node_cfgs = make_node_cfgs<20>(5);
   auto nodes = launch_nodes(node_cfgs);
-
+  for (const auto &node : nodes) {
+    std::cerr << "genesis_hash: " << node->getConfig().genesis.dag_block.getHash() << std::endl;
+  }
   class context {
     decltype(nodes) &nodes_;
     vector<TransactionClient> trx_clients;
@@ -786,7 +788,7 @@ TEST_F(FullNodeTest, insert_anchor_and_compute_order) {
   auto nodes = launch_nodes(node_cfgs);
   auto &node = nodes[0];
 
-  g_mock_dag0 = samples::createMockDag1(node->getConfig().chain.dag_genesis_block.getHash().toString());
+  g_mock_dag0 = samples::createMockDag1(node->getConfig().genesis.dag_block.getHash());
 
   for (int i = 1; i <= 9; i++) {
     node->getDagManager()->addDagBlock(g_mock_dag0[i]);
@@ -904,7 +906,7 @@ TEST_F(FullNodeTest, reconstruct_dag) {
   auto num_blks = g_mock_dag0->size();
   {
     auto node = create_nodes(node_cfgs, true /*start*/).front();
-    g_mock_dag0 = samples::createMockDag0(node->getConfig().chain.dag_genesis_block.getHash().toString());
+    g_mock_dag0 = samples::createMockDag0(node->getConfig().genesis.dag_block.getHash());
 
     taraxa::thisThreadSleepForMilliSeconds(100);
 
@@ -1444,7 +1446,7 @@ TEST_F(FullNodeTest, transfer_to_self) {
 
 TEST_F(FullNodeTest, chain_config_json) {
   string expected_default_chain_cfg_json = R"({
-  "dag_genesis_block": {
+  "dag_block": {
     "level": "0x0",
     "pivot": "0x0000000000000000000000000000000000000000000000000000000000000000",
     "sig": "0xb7e22d46c1ba94d5e8347b01d137b5c428fcbbeaf0a77fb024cbbf1517656ff00d04f7f25be608c321b0d7483c402c294ff46c49b265305d046a52236c0a363701",
@@ -1513,18 +1515,18 @@ TEST_F(FullNodeTest, chain_config_json) {
 })";
   Json::Value default_chain_config_json;
   std::istringstream(expected_default_chain_cfg_json) >> default_chain_config_json;
-  ASSERT_EQ(default_chain_config_json, enc_json(ChainConfig::predefined()));
+  ASSERT_EQ(default_chain_config_json, enc_json(Genesis::predefined()));
   Json::Value test_node_config_json;
   std::ifstream((DIR_CONF / "conf_taraxa1.json").string(), std::ifstream::binary) >> test_node_config_json;
   Json::Value test_node_wallet_json;
   std::ifstream((DIR_CONF / "wallet1.json").string(), std::ifstream::binary) >> test_node_wallet_json;
-  test_node_config_json.removeMember("chain_config");
-  ASSERT_EQ(enc_json(FullNodeConfig(test_node_config_json, test_node_wallet_json).chain), default_chain_config_json);
-  test_node_config_json["chain_config"] = default_chain_config_json;
-  ASSERT_EQ(enc_json(FullNodeConfig(test_node_config_json, test_node_wallet_json).chain), default_chain_config_json);
-  test_node_config_json["chain_config"] = "test";
-  ASSERT_EQ(enc_json(FullNodeConfig(test_node_config_json, test_node_wallet_json).chain),
-            enc_json(ChainConfig::predefined("test")));
+  test_node_config_json.removeMember("genesis");
+  ASSERT_EQ(enc_json(FullNodeConfig(test_node_config_json, test_node_wallet_json).genesis), default_chain_config_json);
+  test_node_config_json["genesis"] = default_chain_config_json;
+  ASSERT_EQ(enc_json(FullNodeConfig(test_node_config_json, test_node_wallet_json).genesis), default_chain_config_json);
+  test_node_config_json["genesis"] = "test";
+  ASSERT_EQ(enc_json(FullNodeConfig(test_node_config_json, test_node_wallet_json).genesis),
+            enc_json(Genesis::predefined("test")));
 }
 
 }  // namespace taraxa::core_tests

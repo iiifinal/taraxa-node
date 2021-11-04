@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "common/constants.hpp"
-#include "config/chain_config.hpp"
+#include "config/genesis.hpp"
 #include "final_chain/trie_common.hpp"
 #include "util_test/gtest.hpp"
 #include "vote/vote.hpp"
@@ -19,7 +19,7 @@ struct advance_check_opts {
 
 struct FinalChainTest : WithDataDir {
   shared_ptr<DbStorage> db{new DbStorage(data_dir / "db")};
-  Config cfg = ChainConfig::predefined().final_chain;
+  Config cfg = Genesis::predefined().final_chain;
   shared_ptr<FinalChain> SUT;
   bool assume_only_toplevel_transfers = true;
   unordered_map<addr_t, u256> expected_balances;

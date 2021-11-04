@@ -1,39 +1,55 @@
-#include "config/chain_config.hpp"
+#include "config/genesis.hpp"
 
 #include <libdevcore/CommonJS.h>
+#include <libdevcore/SHA3.h>
 
 #include <sstream>
 
-namespace taraxa::chain_config {
+namespace taraxa {
 using std::stringstream;
 
-Json::Value enc_json(ChainConfig const& obj) {
+h256 Genesis::getHash() const { return dev::sha3(rlp()); }
+
+bytes Genesis::rlp() const {
+  dev::RLPStream s;
+  s.appendList(5);
+
+  s << chain_id;
+  s << dag_block.rlp(true);
+  s << sortition.rlp();
+  s << pbft.rlp();
+  s << final_chain.rlp();
+
+  return s.out();
+}
+
+Json::Value enc_json(Genesis const& obj) {
   Json::Value json(Json::objectValue);
   if (obj.chain_id) {
     json["chain_id"] = dev::toJS(obj.chain_id);
   }
-  json["dag_genesis_block"] = obj.dag_genesis_block.getJson(false);
+  json["dag_block"] = obj.dag_block.getJson(false);
   json["sortition"] = enc_json(obj.sortition);
   json["pbft"] = enc_json(obj.pbft);
   json["final_chain"] = enc_json(obj.final_chain);
   return json;
 }
 
-void dec_json(Json::Value const& json, ChainConfig& obj) {
+void dec_json(Json::Value const& json, Genesis& obj) {
   if (auto const& e = json["chain_id"]; e.isString()) {
     obj.chain_id = dev::jsToInt(e.asString());
   }
-  obj.dag_genesis_block = DagBlock(json["dag_genesis_block"]);
+  obj.dag_block = DagBlock(json["dag_block"]);
   dec_json(json["sortition"], obj.sortition);
   dec_json(json["pbft"], obj.pbft);
   dec_json(json["final_chain"], obj.final_chain);
 }
 
-decltype(ChainConfig::predefined_) const ChainConfig::predefined_([] {
-  decltype(ChainConfig::predefined_)::val_t cfgs;
+decltype(Genesis::predefined_) const Genesis::predefined_([] {
+  decltype(Genesis::predefined_)::val_t cfgs;
   cfgs["default"] = [] {
-    ChainConfig cfg;
-    cfg.dag_genesis_block = DagBlock(string(R"({
+    Genesis cfg;
+    cfg.dag_block = DagBlock(string(R"({
       "level": 0,
       "tips": [],
       "trxs": [],
@@ -78,4 +94,4 @@ decltype(ChainConfig::predefined_) const ChainConfig::predefined_([] {
   return cfgs;
 });
 
-}  // namespace taraxa::chain_config
+}  // namespace taraxa

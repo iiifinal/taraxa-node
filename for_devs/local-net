@@ -105,13 +105,13 @@ def config(binary, boot_nodes, rpc_nodes):
                     tmp_config.update(config_data)
 
                 if not existing_chain_config:
-                    existing_chain_config = tmp_config['chain_config']
+                    existing_chain_config = tmp_config['genesis']
                     existing_chain_config_node = worker_name
 
-                if tmp_config['chain_config'] != existing_chain_config:
+                if tmp_config['genesis'] != existing_chain_config:
                     sys.exit("Existing chain_configs don't match between nodes: " + existing_chain_config_node + " & " + worker_name)
 
-                timestamp = tmp_config['chain_config']['dag_genesis_block']['timestamp']
+                timestamp = tmp_config['genesis']['dag_block']['timestamp']
                 continue
 
             if type == "boot" and existing_chain_config:
@@ -145,12 +145,12 @@ def config(binary, boot_nodes, rpc_nodes):
                 config.update(config_data)
 
             if existing_chain_config:
-                config['chain_config'] = existing_chain_config
+                config['genesis'] = existing_chain_config
             else:
-                eligibility_balance_threshold = config['chain_config'][
+                eligibility_balance_threshold = config['genesis'][
                     'final_chain']['state']['dpos']['eligibility_balance_threshold']
-                genesis_state = config['chain_config']['final_chain']['state']['dpos']['genesis_state']
-                genesis_balances = config['chain_config']['final_chain']['state']['genesis_balances']
+                genesis_state = config['genesis']['final_chain']['state']['dpos']['genesis_state']
+                genesis_balances = config['genesis']['final_chain']['state']['genesis_balances']
 
                 genesis_balances_faucet_address = list(genesis_balances.keys())[0]
                 genesis_balances_faucet_value = genesis_balances[genesis_balances_faucet_address]
@@ -163,10 +163,10 @@ def config(binary, boot_nodes, rpc_nodes):
                         genesis_state[j][boot_nodes_public_addresses[a]
                                          ] = eligibility_balance_threshold
 
-                config['chain_config']['final_chain']['state']['dpos']['genesis_state'] = genesis_state
-                config['chain_config']['final_chain']['state']['genesis_balances'] = genesis_balances
-                config['chain_config']['dag_genesis_block']['timestamp'] = timestamp
-                config['chain_config']['final_chain']['genesis_block_fields']['timestamp'] = timestamp
+                config['genesis']['final_chain']['state']['dpos']['genesis_state'] = genesis_state
+                config['genesis']['final_chain']['state']['genesis_balances'] = genesis_balances
+                config['genesis']['dag_block']['timestamp'] = timestamp
+                config['genesis']['final_chain']['genesis_block_fields']['timestamp'] = timestamp
 
             config['network_tcp_port'] = int(f'1{port_prefix}{i+1}02')
             config['network_udp_port'] = int(f'1{port_prefix}{i+1}02')

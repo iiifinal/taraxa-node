@@ -48,9 +48,8 @@ void FullNode::init() {
                << EthReset << "Node address: " << EthRed << node_addr.toString() << std::endl
                << EthReset << "Node VRF public key: " << EthGreen
                << vrf_wrapper::getVrfPublicKey(conf_.vrf_secret).toString() << EthReset;
-
-  if (!conf_.chain.dag_genesis_block.verifySig()) {
-    LOG(log_er_) << "Genesis block is invalid";
+  if (!conf_.genesis.dag_block.verifySig()) {
+    LOG(log_er_) << "DAG genesis block is invalid";
     assert(false);
   }
   {
@@ -78,36 +77,39 @@ void FullNode::init() {
     }
 
     if (db_->getNumDagBlocks() == 0) {
-      db_->saveDagBlock(conf_.chain.dag_genesis_block);
+      db_->saveDagBlock(conf_.genesis.dag_block);
+      db_->setGenesisHash(conf_.genesis.getHash());
     }
   }
   LOG(log_nf_) << "DB initialized ...";
 
-  final_chain_ = NewFinalChain(db_, conf_.chain.final_chain, node_addr);
+  final_chain_ = NewFinalChain(db_, conf_.genesis.final_chain, node_addr);
   trx_mgr_ = std::make_shared<TransactionManager>(conf_, node_addr, db_);
 
-  auto genesis_hash = conf_.chain.dag_genesis_block.getHash();
-  auto dag_genesis_hash_from_db = *db_->getBlocksByLevel(0).begin();
-  if (genesis_hash != dag_genesis_hash_from_db) {
-    LOG(log_er_) << "The DAG genesis block hash " << genesis_hash << " in config is different with "
-                 << dag_genesis_hash_from_db << " in DB";
+  auto genesis_hash = conf_.genesis.getHash();
+  auto genesis_hash_from_db = db_->getGenesisHash();
+  if (genesis_hash != genesis_hash_from_db) {
+    LOG(log_er_) << "Genesis hash " << genesis_hash << " is different with "
+                 << (genesis_hash_from_db.has_value() ? *genesis_hash_from_db : h256(0)) << " in DB";
     assert(false);
   }
+  auto dag_genesis_hash = conf_.genesis.dag_block.getHash();
 
   pbft_chain_ = std::make_shared<PbftChain>(node_addr, db_);
   next_votes_mgr_ = std::make_shared<NextVotesForPreviousRound>(node_addr, db_, final_chain_);
-  dag_blk_mgr_ = std::make_shared<DagBlockManager>(node_addr, conf_.chain.sortition, conf_.chain.final_chain.state.dpos,
-                                                   4 /* verifer thread*/, db_, trx_mgr_, final_chain_, pbft_chain_,
-                                                   log_time_, conf_.test_params.max_block_queue_warn);
-  dag_mgr_ = std::make_shared<DagManager>(genesis_hash, node_addr, trx_mgr_, pbft_chain_, dag_blk_mgr_, db_, log_time_);
+  dag_blk_mgr_ = std::make_shared<DagBlockManager>(
+      node_addr, conf_.genesis.sortition, conf_.genesis.final_chain.state.dpos, 4 /* verifer thread*/, db_, trx_mgr_,
+      final_chain_, pbft_chain_, log_time_, conf_.test_params.max_block_queue_warn);
+  dag_mgr_ =
+      std::make_shared<DagManager>(dag_genesis_hash, node_addr, trx_mgr_, pbft_chain_, dag_blk_mgr_, db_, log_time_);
   vote_mgr_ = std::make_shared<VoteManager>(node_addr, db_, final_chain_, pbft_chain_, next_votes_mgr_);
-  pbft_mgr_ = std::make_shared<PbftManager>(conf_.chain.pbft, genesis_hash, node_addr, db_, pbft_chain_, vote_mgr_,
-                                            next_votes_mgr_, dag_mgr_, dag_blk_mgr_, trx_mgr_, final_chain_,
+  pbft_mgr_ = std::make_shared<PbftManager>(conf_.genesis.pbft, dag_genesis_hash, node_addr, db_, pbft_chain_,
+                                            vote_mgr_, next_votes_mgr_, dag_mgr_, dag_blk_mgr_, trx_mgr_, final_chain_,
                                             kp_.secret(), conf_.vrf_secret);
   blk_proposer_ =
       std::make_shared<BlockProposer>(conf_.test_params.block_proposer, dag_mgr_, trx_mgr_, dag_blk_mgr_, final_chain_,
                                       node_addr, getSecretKey(), getVrfSecretKey(), log_time_);
-  network_ = std::make_shared<Network>(conf_.network, conf_.net_file_path().string(), kp_, db_, pbft_mgr_, pbft_chain_,
+  network_ = std::make_shared<Network>(conf_, conf_.net_file_path().string(), kp_, db_, pbft_mgr_, pbft_chain_,
                                        vote_mgr_, next_votes_mgr_, dag_mgr_, dag_blk_mgr_, trx_mgr_);
 }
 
@@ -122,7 +124,7 @@ void FullNode::start() {
     net::rpc::eth::EthParams eth_rpc_params;
     eth_rpc_params.address = getAddress();
     eth_rpc_params.secret = kp_.secret();
-    eth_rpc_params.chain_id = conf_.chain.chain_id;
+    eth_rpc_params.chain_id = conf_.genesis.chain_id;
     eth_rpc_params.final_chain = final_chain_;
     eth_rpc_params.get_trx = [db = db_](auto const &trx_hash) { return db->getTransaction(trx_hash); };
     eth_rpc_params.send_trx = [trx_manager = trx_mgr_](auto const &trx) {

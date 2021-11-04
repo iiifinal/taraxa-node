@@ -54,7 +54,6 @@ using sig_t = uint520_hash_t;
 using vote_hash_t = uint256_hash_t;
 using blk_hash_t = uint256_hash_t;
 using trx_hash_t = uint256_hash_t;
-using sig_hash_t = uint256_hash_t;
 
 using gas_t = uint64_t;
 using key_t = std::string;

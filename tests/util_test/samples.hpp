@@ -195,21 +195,20 @@ inline std::vector<std::pair<DagBlock, SharedTransactions>> createMockDagBlkSamp
 }
 
 //
-inline std::vector<DagBlock> createMockDag0(
-    std::string genesis = "0000000000000000000000000000000000000000000000000000000000000000") {
+inline std::vector<DagBlock> createMockDag0(blk_hash_t genesis = blk_hash_t(0)) {
   std::vector<DagBlock> blks;
   DagBlock dummy;
-  DagBlock blk1(blk_hash_t(genesis),  // pivot
-                1,                    // level
-                {},                   // tips
+  DagBlock blk1(genesis,  // pivot
+                1,        // level
+                {},       // tips
                 {}, secret_t::random());
-  DagBlock blk2(blk_hash_t(genesis),  // pivot
-                1,                    // level
-                {},                   // tips
+  DagBlock blk2(genesis,  // pivot
+                1,        // level
+                {},       // tips
                 {}, secret_t::random());
-  DagBlock blk3(blk_hash_t(genesis),  // pivot
-                1,                    // level
-                {},                   // tips
+  DagBlock blk3(genesis,  // pivot
+                1,        // level
+                {},       // tips
                 {}, secret_t::random());
   DagBlock blk4(blk1.getHash(),  // pivot
                 2,               // level
@@ -300,31 +299,30 @@ inline std::vector<DagBlock> createMockDag0(
 }
 
 //
-inline std::vector<DagBlock> createMockDag1(
-    std::string genesis = "0000000000000000000000000000000000000000000000000000000000000000") {
+inline std::vector<DagBlock> createMockDag1(blk_hash_t genesis = blk_hash_t(0)) {
   std::vector<DagBlock> blks;
   DagBlock dummy;
-  DagBlock blk1(blk_hash_t(genesis),  // pivot
-                1,                    // level
-                {},                   // tips
-                {},                   // trxs
-                sig_t(0),             // sig
-                blk_hash_t(1),        // hash
+  DagBlock blk1(genesis,        // pivot
+                1,              // level
+                {},             // tips
+                {},             // trxs
+                sig_t(0),       // sig
+                blk_hash_t(1),  // hash
                 addr_t(123));
 
-  DagBlock blk2(blk_hash_t(genesis),  // pivot
-                1,                    // level
-                {},                   // tips
-                {},                   // trxs
-                sig_t(0),             // sig
-                blk_hash_t(2),        // hash
+  DagBlock blk2(genesis,        // pivot
+                1,              // level
+                {},             // tips
+                {},             // trxs
+                sig_t(0),       // sig
+                blk_hash_t(2),  // hash
                 addr_t(123));
-  DagBlock blk3(blk_hash_t(genesis),  // pivot
-                1,                    // level
-                {},                   // tips
-                {},                   // trxs
-                sig_t(0),             // sig
-                blk_hash_t(3),        // hash
+  DagBlock blk3(genesis,        // pivot
+                1,              // level
+                {},             // tips
+                {},             // trxs
+                sig_t(0),       // sig
+                blk_hash_t(3),  // hash
                 addr_t(123));
   DagBlock blk4(blk_hash_t(1),  // pivot
                 2,              // level

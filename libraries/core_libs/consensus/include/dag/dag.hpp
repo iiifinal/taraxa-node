@@ -126,8 +126,6 @@ class DagManager : public std::enable_shared_from_this<DagManager> {
   void stop();
   void setNetwork(std::weak_ptr<Network> network) { network_ = std::move(network); }
 
-  blk_hash_t const &get_genesis() { return genesis_; }
-
   bool pivotAndTipsAvailable(DagBlock const &blk);
   void addDagBlock(DagBlock const &blk, SharedTransactions &&trxs = {}, bool proposed = false,
                    bool save = true);  // insert to buffer if fail
@@ -192,7 +190,6 @@ class DagManager : public std::enable_shared_from_this<DagManager> {
   blk_hash_t anchor_;      // anchor of the last period
   blk_hash_t old_anchor_;  // anchor of the second to last period
   uint64_t period_;        // last period
-  blk_hash_t genesis_;
   std::map<uint64_t, std::vector<blk_hash_t>> non_finalized_blks_;
   DagFrontier frontier_;
   std::atomic<bool> stopped_ = true;

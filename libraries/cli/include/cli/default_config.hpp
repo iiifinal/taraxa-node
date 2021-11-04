@@ -63,9 +63,9 @@ const char *default_json = R"foo({
       }
     ]
   },
-  "chain_config": {
+  "genesis": {
     "chain_id": "0x4",
-    "dag_genesis_block": {
+    "dag_block": {
       "level": "0x0",
       "pivot": "0x0000000000000000000000000000000000000000000000000000000000000000",
       "sig": "0xb7e22d46c1ba94d5e8347b01d137b5c428fcbbeaf0a77fb024cbbf1517656ff00d04f7f25be608c321b0d7483c402c294ff46c49b265305d046a52236c0a363701",

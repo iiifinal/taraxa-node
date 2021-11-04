@@ -15,7 +15,7 @@ class StatusPacketHandler : public ExtSyncingPacketHandler {
                       std::shared_ptr<PbftManager> pbft_mgr, std::shared_ptr<DagManager> dag_mgr,
                       std::shared_ptr<DagBlockManager> dag_blk_mgr,
                       std::shared_ptr<NextVotesForPreviousRound> next_votes_mgr, std::shared_ptr<DbStorage> db,
-                      uint64_t conf_network_id, const addr_t& node_addr);
+                      uint64_t conf_network_id, h256 genesis_hash, const addr_t& node_addr);
 
   virtual ~StatusPacketHandler() = default;
 
@@ -31,6 +31,7 @@ class StatusPacketHandler : public ExtSyncingPacketHandler {
 
   static constexpr uint16_t INITIAL_STATUS_PACKET_ITEM_COUNT = 10;
   const uint64_t conf_network_id_;
+  const h256 genesis_hash_;
 
   std::shared_ptr<NextVotesForPreviousRound> next_votes_mgr_;
 };

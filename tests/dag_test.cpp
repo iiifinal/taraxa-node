@@ -141,8 +141,8 @@ TEST_F(DagTest, compute_epoch) {
                                                       TransactionManager::VerifyMode::skip_verify_sig);
   auto mgr =
       std::make_shared<DagManager>(GENESIS, addr_t(), trx_mgr, nullptr,
-                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].chain.sortition,
-                                                                     node_cfgs[0].chain.final_chain.state.dpos, 1,
+                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].genesis.sortition,
+                                                                     node_cfgs[0].genesis.final_chain.state.dpos, 1,
                                                                      db_ptr, nullptr, nullptr, nullptr, time_log),
                                    db_ptr, logger::Logger());
   DagBlock blkA(blk_hash_t(1), 0, {}, {trx_hash_t(2)}, sig_t(1), blk_hash_t(2), addr_t(1));
@@ -228,8 +228,8 @@ TEST_F(DagTest, receive_block_in_order) {
                                                       TransactionManager::VerifyMode::skip_verify_sig);
   auto mgr =
       std::make_shared<DagManager>(GENESIS, addr_t(), trx_mgr, nullptr,
-                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].chain.sortition,
-                                                                     node_cfgs[0].chain.final_chain.state.dpos, 1,
+                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].genesis.sortition,
+                                                                     node_cfgs[0].genesis.final_chain.state.dpos, 1,
                                                                      db_ptr, nullptr, nullptr, nullptr, time_log),
                                    db_ptr, logger::Logger());
   // mgr.setVerbose(true);
@@ -265,8 +265,8 @@ TEST_F(DagTest, compute_epoch_2) {
                                                       TransactionManager::VerifyMode::skip_verify_sig);
   auto mgr =
       std::make_shared<DagManager>(GENESIS, addr_t(), trx_mgr, nullptr,
-                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].chain.sortition,
-                                                                     node_cfgs[0].chain.final_chain.state.dpos, 1,
+                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].genesis.sortition,
+                                                                     node_cfgs[0].genesis.final_chain.state.dpos, 1,
                                                                      db_ptr, nullptr, nullptr, nullptr, time_log),
                                    db_ptr, logger::Logger());
   DagBlock blkA(blk_hash_t(1), 0, {}, {trx_hash_t(2)}, sig_t(1), blk_hash_t(2), addr_t(1));
@@ -344,8 +344,8 @@ TEST_F(DagTest, get_latest_pivot_tips) {
                                                       TransactionManager::VerifyMode::skip_verify_sig);
   auto mgr =
       std::make_shared<DagManager>(GENESIS, addr_t(), trx_mgr, nullptr,
-                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].chain.sortition,
-                                                                     node_cfgs[0].chain.final_chain.state.dpos, 1,
+                                   std::make_shared<DagBlockManager>(addr_t(), node_cfgs[0].genesis.sortition,
+                                                                     node_cfgs[0].genesis.final_chain.state.dpos, 1,
                                                                      db_ptr, nullptr, nullptr, nullptr, time_log),
                                    db_ptr, logger::Logger());
 
