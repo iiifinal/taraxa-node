@@ -94,7 +94,7 @@ void FullNode::init() {
     assert(false);
   }
 
-  pbft_chain_ = std::make_shared<PbftChain>(genesis_hash, node_addr, db_);
+  pbft_chain_ = std::make_shared<PbftChain>(node_addr, db_);
   next_votes_mgr_ = std::make_shared<NextVotesForPreviousRound>(node_addr, db_, final_chain_);
   dag_blk_mgr_ = std::make_shared<DagBlockManager>(node_addr, conf_.chain.sortition, conf_.chain.final_chain.state.dpos,
                                                    4 /* verifer thread*/, db_, trx_mgr_, final_chain_, pbft_chain_,

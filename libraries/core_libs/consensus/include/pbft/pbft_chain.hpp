@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "config/pbft_config.hpp"
 #include "logger/logger.hpp"
 #include "pbft/pbft_block.hpp"
 
@@ -24,7 +23,7 @@ struct Transaction;
 
 class PbftChain {
  public:
-  explicit PbftChain(blk_hash_t const& dag_genesis_hash, addr_t node_addr, std::shared_ptr<DbStorage> db);
+  explicit PbftChain(addr_t node_addr, std::shared_ptr<DbStorage> db);
 
   blk_hash_t getHeadHash() const;
   uint64_t getPbftChainSize() const;
@@ -59,7 +58,6 @@ class PbftChain {
   mutable boost::shared_mutex chain_head_access_;
 
   blk_hash_t head_hash_;             // PBFT head hash
-  blk_hash_t dag_genesis_hash_;      // DAG genesis at height 1
   uint64_t size_;                    // PBFT chain size, includes both executed and unexecuted PBFT blocks
   blk_hash_t last_pbft_block_hash_;  // last PBFT block hash in PBFT chain, may not execute yet
 
