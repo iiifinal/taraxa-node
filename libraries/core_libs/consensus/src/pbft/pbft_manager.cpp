@@ -1165,7 +1165,7 @@ blk_hash_t PbftManager::proposePbftBlock_() {
   if (weighted_votes_count_ == 0 || !vrf_sortition.getBinominalDistribution(
                                         getDposWeightedVotesCount(), getDposTotalVotesCount(), sortition_threshold_)) {
     return NULL_BLOCK_HASH;
- }
+  }
 
   LOG(log_dg_) << "Into propose PBFT block";
   blk_hash_t last_period_dag_anchor_block_hash;
@@ -1466,7 +1466,7 @@ bool PbftManager::pushCertVotedPbftBlockIntoChain_(taraxa::blk_hash_t const &cer
 
   // cleanup PBFT unverified blocks table
   pbft_chain_->cleanupUnverifiedPbftBlocks(*pbft_block);
-  
+
   return true;
 }
 
