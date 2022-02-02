@@ -1083,10 +1083,10 @@ void PbftManager::secondFinish_() {
   loop_back_finish_state_ = elapsed_time_in_round_ms_ > end_time_for_step;
 }
 
-std::shared_ptr<PbftBlock> PbftManager::generatePbftBlock(const blk_hash_t &prev_blk_hash,
-                                                          const blk_hash_t &anchor_hash, const blk_hash_t &order_hash) {
+blk_hash_t PbftManager::generatePbftBlock(const blk_hash_t &prev_blk_hash, const blk_hash_t &anchor_hash,
+                                          const blk_hash_t &order_hash) {
   auto propose_period = pbft_chain_->getPbftChainSize() + 1;
-  auto pbft_block =
+  const auto pbft_block =
       std::make_shared<PbftBlock>(prev_blk_hash, anchor_hash, order_hash, propose_period, node_addr_, node_sk_);
 
   // push pbft block
@@ -1097,7 +1097,10 @@ std::shared_ptr<PbftBlock> PbftManager::generatePbftBlock(const blk_hash_t &prev
     net->onNewPbftBlock(pbft_block);
   }
 
-  return pbft_block;
+  LOG(log_dg_) << node_addr_ << " propose PBFT block succussful! in round: " << round_ << " in step: " << step_
+               << " PBFT block: " << pbft_block;
+
+  return pbft_block->getBlockHash();
 }
 
 std::shared_ptr<Vote> PbftManager::generateVote(blk_hash_t const &blockhash, PbftVoteTypes type, uint64_t round,
@@ -1199,8 +1202,7 @@ blk_hash_t PbftManager::proposePbftBlock_() {
   // Looks like ghost never empty, at lease include the last period dag anchor block
   if (ghost.empty()) {
     LOG(log_dg_) << "GHOST is empty. No new DAG blocks generated, PBFT propose NULL BLOCK HASH anchor";
-    auto pbft_block = generatePbftBlock(last_pbft_block_hash, NULL_BLOCK_HASH, NULL_BLOCK_HASH);
-    return pbft_block->getBlockHash();
+    return generatePbftBlock(last_pbft_block_hash, NULL_BLOCK_HASH, NULL_BLOCK_HASH);
   }
 
   blk_hash_t dag_block_hash;
@@ -1221,8 +1223,7 @@ blk_hash_t PbftManager::proposePbftBlock_() {
   if (dag_block_hash == dag_genesis_) {
     LOG(log_dg_) << "No new DAG blocks generated. DAG only has genesis " << dag_block_hash
                  << " PBFT propose NULL BLOCK HASH anchor";
-    auto pbft_block = generatePbftBlock(last_pbft_block_hash, NULL_BLOCK_HASH, NULL_BLOCK_HASH);
-    return pbft_block->getBlockHash();
+    return generatePbftBlock(last_pbft_block_hash, NULL_BLOCK_HASH, NULL_BLOCK_HASH);
   }
 
   // Compare with last dag block hash. If they are same, which means no new dag blocks generated since last round. In
@@ -1231,8 +1232,7 @@ blk_hash_t PbftManager::proposePbftBlock_() {
     LOG(log_dg_) << "Last period DAG anchor block hash " << dag_block_hash
                  << " No new DAG blocks generated, PBFT propose NULL BLOCK HASH anchor";
     LOG(log_dg_) << "Ghost: " << ghost;
-    auto pbft_block = generatePbftBlock(last_pbft_block_hash, NULL_BLOCK_HASH, NULL_BLOCK_HASH);
-    return pbft_block->getBlockHash();
+    return generatePbftBlock(last_pbft_block_hash, NULL_BLOCK_HASH, NULL_BLOCK_HASH);
   }
 
   // get DAG block and transaction order
@@ -1266,14 +1266,12 @@ blk_hash_t PbftManager::proposePbftBlock_() {
   }
 
   auto order_hash = calculateOrderHash(dag_block_order, non_finalized_transactions);
-  auto pbft_block = generatePbftBlock(last_pbft_block_hash, dag_block_hash, order_hash);
-  LOG(log_nf_) << "Proposed Pbft block: " << pbft_block->getBlockHash() << ". Order hash:" << order_hash
+  auto pbft_block_hash = generatePbftBlock(last_pbft_block_hash, dag_block_hash, order_hash);
+  LOG(log_nf_) << "Proposed Pbft block: " << pbft_block_hash << ". Order hash:" << order_hash
                << ". DAG order for proposed block" << dag_block_order << ". Transaction order for proposed block"
                << non_finalized_transactions;
-  LOG(log_dg_) << node_addr_ << " propose PBFT block succussful! in round: " << round << " in step: " << step_
-               << " PBFT block: " << pbft_block;
 
-  return pbft_block->getBlockHash();
+  return pbft_block_hash;
 }
 
 blk_hash_t PbftManager::identifyLeaderBlock_() {
@@ -1585,8 +1583,10 @@ bool PbftManager::pushPbftBlock_(SyncBlock &&sync_block, vec_blk_t &&dag_blocks_
   db_->addPbftMgrVotedValueToBatch(PbftMgrVotedValue::LastCertVotedValue, NULL_BLOCK_HASH, batch);
 
   // pass pbft with dag blocks and transactions to adjust difficulty
-  dag_blk_mgr_->sortitionParamsManager().pbftBlockPushed(sync_block, batch);
-
+  if (sync_block.pbft_blk->getPivotDagBlockHash() != NULL_BLOCK_HASH) {
+    dag_blk_mgr_->sortitionParamsManager().pbftBlockPushed(sync_block, batch,
+                                                           pbft_chain_->getPbftChainSizeExcludingEmptyPbftBlocks() + 1);
+  }
   {
     // This makes sure that no DAG block or transaction can be added or change state in transaction and dag manager when
     // finalizing pbft block with dag blocks and transactions
@@ -1603,7 +1603,7 @@ bool PbftManager::pushPbftBlock_(SyncBlock &&sync_block, vec_blk_t &&dag_blocks_
     trx_mgr_->updateFinalizedTransactionsStatus(sync_block);
 
     // update PBFT chain size
-    pbft_chain_->updatePbftChain(pbft_block_hash);
+    pbft_chain_->updatePbftChain(pbft_block_hash, sync_block.pbft_blk->getPivotDagBlockHash() == NULL_BLOCK_HASH);
   }
 
   last_cert_voted_value_ = NULL_BLOCK_HASH;
