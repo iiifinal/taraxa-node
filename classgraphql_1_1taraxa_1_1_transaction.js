@@ -1,0 +1,28 @@
+var classgraphql_1_1taraxa_1_1_transaction =
+[
+    [ "Transaction", "classgraphql_1_1taraxa_1_1_transaction.html#a730fc6eb89188afb8178f29a244d8e36", null ],
+    [ "getBlock", "classgraphql_1_1taraxa_1_1_transaction.html#aeb5ea0c8c2b641a3f65e701af9e435f5", null ],
+    [ "getCreatedContract", "classgraphql_1_1taraxa_1_1_transaction.html#a333c1908457ca8954bad605efacff217", null ],
+    [ "getCumulativeGasUsed", "classgraphql_1_1taraxa_1_1_transaction.html#a56f34404b5c5a3be4ca74e173dcd3736", null ],
+    [ "getFrom", "classgraphql_1_1taraxa_1_1_transaction.html#a5c47fe582cd73c8a4e2575ebe1e0de05", null ],
+    [ "getGas", "classgraphql_1_1taraxa_1_1_transaction.html#ae63d3268c7081cdb679475e8ebc0689a", null ],
+    [ "getGasPrice", "classgraphql_1_1taraxa_1_1_transaction.html#a96cfc97277d8240bc18b1897c9048e0f", null ],
+    [ "getGasUsed", "classgraphql_1_1taraxa_1_1_transaction.html#a58e40b25ba3e4e0f887db3ca600e9481", null ],
+    [ "getHash", "classgraphql_1_1taraxa_1_1_transaction.html#a5ce043a6f8df570cf174287d4659222b", null ],
+    [ "getIndex", "classgraphql_1_1taraxa_1_1_transaction.html#a945454ad857bf4696fb04fde6671aba7", null ],
+    [ "getInputData", "classgraphql_1_1taraxa_1_1_transaction.html#a909f64943698ece2b63463887e1a5985", null ],
+    [ "getLogs", "classgraphql_1_1taraxa_1_1_transaction.html#ac81a0398b682b9c570844d7b6a7da1fc", null ],
+    [ "getNonce", "classgraphql_1_1taraxa_1_1_transaction.html#acb6632104e0581d4722da2077cf59479", null ],
+    [ "getR", "classgraphql_1_1taraxa_1_1_transaction.html#a8288273c8d0a3e7f75ffcc8d5fa18b0b", null ],
+    [ "getS", "classgraphql_1_1taraxa_1_1_transaction.html#a279a8d1857fd6d9c064e7b8a0d87f6e8", null ],
+    [ "getStatus", "classgraphql_1_1taraxa_1_1_transaction.html#a04e7e2359031add76da96c15f2a04069", null ],
+    [ "getTo", "classgraphql_1_1taraxa_1_1_transaction.html#a498c0312f6ab3b577237e3fd457831db", null ],
+    [ "getV", "classgraphql_1_1taraxa_1_1_transaction.html#a98f7316ba927906ea251d40bd903b366", null ],
+    [ "getValue", "classgraphql_1_1taraxa_1_1_transaction.html#ac41d7906dd0c476a3fc75ee0d63f5b38", null ],
+    [ "final_chain_", "classgraphql_1_1taraxa_1_1_transaction.html#a6d95c8547d2e80024579750385b5ddcd", null ],
+    [ "get_block_by_num_", "classgraphql_1_1taraxa_1_1_transaction.html#afd0799c56bc51a537ec4310077aba670", null ],
+    [ "location_", "classgraphql_1_1taraxa_1_1_transaction.html#a216e3ea16415e8da3c37cbb0161ab3b2", null ],
+    [ "receipt_", "classgraphql_1_1taraxa_1_1_transaction.html#a4129ca4f8bc6d3f45dc2e4e3372d122f", null ],
+    [ "transaction_", "classgraphql_1_1taraxa_1_1_transaction.html#a548eeebd06374697ae07dce6f35f56e5", null ],
+    [ "trx_manager_", "classgraphql_1_1taraxa_1_1_transaction.html#a05680ec4965d2e2e0a754b8cb259f701", null ]
+];

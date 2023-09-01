@@ -1,0 +1,28 @@
+var types_8hpp =
+[
+    [ "addr_t", "types_8hpp.html#ad3e82d51831adf27d1db73c289aa28d5", null ],
+    [ "blk_hash_t", "types_8hpp.html#a55e7078ff4a35de49d82da478b6d135b", null ],
+    [ "byte", "types_8hpp.html#a246ff1eeae4d7fef0f54e7384b812bf0", null ],
+    [ "bytes", "types_8hpp.html#a5b2ee44c8273f8acf25fa5ea657c77fd", null ],
+    [ "EthBlockNumber", "types_8hpp.html#a376e12232232a6437159f77ba13e3bf2", null ],
+    [ "gas_t", "types_8hpp.html#ae64cd164e0402036777a1aab63d2a66f", null ],
+    [ "level_t", "types_8hpp.html#ac29ce7c6f0fae63e548b523170910526", null ],
+    [ "PbftPeriod", "types_8hpp.html#a65a103ca2c7b87e38da64ba76ffe0eac", null ],
+    [ "PbftRound", "types_8hpp.html#a6339cbbf8f3eef50f67929876dd45b5f", null ],
+    [ "PbftStep", "types_8hpp.html#a1b866c209a558125f9ca8e204144c215", null ],
+    [ "public_t", "types_8hpp.html#a939db49e844b718c8ccc5ab4f5833f57", null ],
+    [ "root_t", "types_8hpp.html#a0826926ee3a622c25c010d9004097ef8", null ],
+    [ "secret_t", "types_8hpp.html#aee86984b7cf218e6347737f4f6cb5d60", null ],
+    [ "sig_t", "types_8hpp.html#ac413a96709236ee8b2a47c019f83ce37", null ],
+    [ "trx_hash_t", "types_8hpp.html#a547380b2fdd6d759f86e4819e84ec314", null ],
+    [ "trx_nonce_t", "types_8hpp.html#a73873ff077f3a9470e522a373eba9200", null ],
+    [ "uint160_hash_t", "types_8hpp.html#aefa6fd5ad981b0cb3eb602983218f3ca", null ],
+    [ "uint256_hash_t", "types_8hpp.html#a5e82c539dc447e0f4562c69fe5d91145", null ],
+    [ "uint256_t", "types_8hpp.html#a8de50f43ce780650bc4a185b970baaa5", null ],
+    [ "uint512_hash_t", "types_8hpp.html#a16fb91a724410e8b1a1174d9dbabec33", null ],
+    [ "uint520_hash_t", "types_8hpp.html#afdbc2bb6877d6ff2055c36afff45899a", null ],
+    [ "val_t", "types_8hpp.html#aad3ca55780e79a029c6a1ccf43f66e67", null ],
+    [ "vec_blk_t", "types_8hpp.html#a3b0dfef1d0e54a4410d95b131a6203b3", null ],
+    [ "vec_trx_t", "types_8hpp.html#ad0d27015d777d709bbfa9046a833ba55", null ],
+    [ "vote_hash_t", "types_8hpp.html#a4f575bc8f641426bf9abc034436b9083", null ]
+];

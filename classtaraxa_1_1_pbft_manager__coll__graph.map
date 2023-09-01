@@ -1,0 +1,10 @@
+<map id="taraxa::PbftManager" name="taraxa::PbftManager">
+<area shape="rect" id="node1" title="PbftManager class is a daemon that is used to finalize a bench of directed acyclic graph (DAG) blocks..." alt="" coords="613,145,768,172"/>
+<area shape="rect" id="node2" title=" " alt="" coords="275,5,339,32"/>
+<area shape="rect" id="node3" href="$classdev_1_1_secure_fixed_hash.html" title=" " alt="" coords="225,57,389,98"/>
+<area shape="rect" id="node4" href="$classdev_1_1_fixed_hash.html" title=" " alt="" coords="5,64,164,91"/>
+<area shape="rect" id="node5" href="$group___p_b_f_t.html#classtaraxa_1_1_period_data_queue" title="PeriodDataQueue class is a syncing queue, the queue stores blocks synced from peers." alt="" coords="213,123,400,149"/>
+<area shape="rect" id="node6" href="$structtaraxa_1_1_pbft_config.html" title=" " alt="" coords="237,173,376,200"/>
+<area shape="rect" id="node7" href="$classdev_1_1_fixed_hash.html" title=" " alt="" coords="227,243,387,269"/>
+<area shape="rect" id="node8" href="$classtaraxa_1_1_proposed_blocks.html" title="class ProposedBlocks holds proposed pbft blocks together with propose votes hashes per period &amp; round" alt="" coords="219,293,394,320"/>
+</map>
